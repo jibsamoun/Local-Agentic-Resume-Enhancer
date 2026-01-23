@@ -1,0 +1,1 @@
+# Handles formatting bullets and job descriptions into prompt string

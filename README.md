@@ -20,4 +20,4 @@ A local-first web app that rewrites resume bullet points into stronger, role-tar
 ## Tech Stack
 - Frontend: TypeScript (Next.js or React)
 - Backend: Python (FastAPI)
-- Local LLM runtime: Ollama or LM Studio (HTTP API)
+- Local LLM runtime: llama3.2:3b

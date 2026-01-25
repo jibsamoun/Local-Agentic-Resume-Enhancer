@@ -20,12 +20,23 @@ def build_rewrite_prompt(bullet: str, job_description: str = None) -> str:
     - scope_first: Lead with scale, team size, or project scope
     - tech_first: Lead with the technologies, tools, or methodologies used
 
+    STRICT RULES:
+1. NEVER invent metrics, numbers, percentages, or statistics
+2. If the original has no numbers, your rewrite must have no numbers
+3. Use qualitative language instead (e.g., "improved", "enhanced", "streamlined")
+4. Ask follow-up questions to get the real metrics
+
     If a target job description is provided, tailor the bullet point to emphasize skills and 
     experiences relevant to that job.
+
+    IMPORTANT: Do NOT invent or hallucinate metrics, numbers, or statistics that were not in the original bullet. 
+    If the original bullet lacks specific metrics, keep the rewrite qualitative and add follow-up questions asking for the missing details.
 
     If the bullet point is missing quantified metrics (numbers, percentages, dollar amounts),
     add follow-up questions asking for specific details that would strengthen the bullet point.
 
+    Remember: NO INVENTED NUMBERS. If unsure, keep it qualitative.
+    
     Original bullet point: {bullet}
     {job_context}
     Respond with valid JSON only, no other text:

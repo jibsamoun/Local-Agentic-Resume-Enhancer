@@ -1,11 +1,6 @@
 # Validates input data for correct business logic processing
 from app.models.schemas import ValidationResponse
-
-ACTION_VERBS = ["led", "managed", "developed", "designed", "implemented", "created", "improved", "optimized", "analyzed", "coordinated", "executed", "produced", "increased", "decreased", "streamlined", "facilitated", "collaborated", "initiated", "spearheaded", "orchestrated", "engineered"]
-
-FIRST_PERSON_PATTERNS = ["I ", "my ", "me ", "we ", "our ", "us "]
-
-MAX_LENGTH = 150
+from app.services.constants import ACTION_VERBS, FIRST_PERSON_PATTERNS, MAX_LENGTH
 
 def check_action_verb(bullet: str) -> bool:
     words = bullet.split(maxsplit=1)

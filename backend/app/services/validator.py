@@ -1,10 +1,33 @@
 # Validates input data for correct business logic processing
+import re
 from app.models.schemas import ValidationResponse
 from app.services.constants import ACTION_VERBS, FIRST_PERSON_PATTERNS, MAX_LENGTH
 
-def check_action_verb(bullet: str) -> bool:
+
+def normalize_bullet(bullet: str) -> str:
+    """Strip whitespace, bullet symbols, and normalize for checking."""
+    # Remove leading/trailing whitespace
+    bullet = bullet.strip()
+    # Remove common bullet symbols at the start
+    bullet = re.sub(r'^[\•\-\*\>\—\–\·\○\●\■\□\➤\→]+\s*', '', bullet)
+    return bullet
+
+
+def extract_first_word(bullet: str) -> str:
+    """Extract first word, stripping punctuation."""
+    bullet = normalize_bullet(bullet)
+    if not bullet:
+        return ""
     words = bullet.split(maxsplit=1)
-    first_word = words[0].lower()
+    if not words:
+        return ""
+    # Remove trailing punctuation from first word
+    first_word = re.sub(r'[^\w]', '', words[0].lower())
+    return first_word
+
+
+def check_action_verb(bullet: str) -> bool:
+    first_word = extract_first_word(bullet)
     return first_word in ACTION_VERBS
 
 def check_first_person(bullet: str) -> bool:

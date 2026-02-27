@@ -14,6 +14,8 @@ def build_rewrite_prompt(bullet: str, job_description: str = None) -> str:
     job_context = ""
     if job_description:
         job_context = f"Target job description: {job_description}"
+    else:
+        job_context = "No job description provided. Write general-purpose improvements."
 
     prompt = f"""You are a resume expert. Rewrite the following resume bullet point into three variants:
     - impact_first: Lead with the measurable result or outcome 
@@ -59,3 +61,19 @@ def build_rewrite_prompt(bullet: str, job_description: str = None) -> str:
     }}"""
 
     return prompt
+
+def build_correction_prompt(invalid_response: str) -> str:
+    correction_prompt = f"""Your previous response was not valid JSON.
+                    Here was your response: {invalid_response}
+
+                    Please return ONLY valid JSON with this exact structure:
+                    {{
+                    "variants": [
+                        {{"variant_type": "impact_first", "text": "your rewritten bullet here"}},
+                        {{"variant_type": "scope_first", "text": "your rewritten bullet here"}},
+                        {{"variant_type": "tech_first", "text": "your rewritten bullet here"}}
+                    ],
+                    "follow_up_questions": []
+                    }}
+    """
+    return correction_prompt

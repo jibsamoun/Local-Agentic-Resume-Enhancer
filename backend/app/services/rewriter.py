@@ -1,5 +1,5 @@
 from app.services.llm_client import LLMClient
-from app.services.prompt_builder import build_rewrite_prompt
+from app.services.prompt_builder import build_rewrite_prompt, build_correction_prompt
 from app.services.validator import validate_bullet
 from app.models.schemas import RewriteResponse, BulletRewrite, RewriteVariant, ValidationResponse
 import json
@@ -55,18 +55,7 @@ async def rewrite_bullets(bullets: list[str], job_description: str = None, max_r
                     )
                 else:
                     print(f"Attempt {attempt + 1} failed. Retrying...")
-                    correction_prompt = f"""Your previous response was not valid JSON.
-                    Here was your response: {llm_response}
-
-                    Please return ONLY valid JSON with this exact structure:
-                    {{
-                    "variants": [
-                        {{"variant_type": "impact_first", "text": "your rewritten bullet here"}},
-                        {{"variant_type": "scope_first", "text": "your rewritten bullet here"}},
-                        {{"variant_type": "tech_first", "text": "your rewritten bullet here"}}
-                    ],
-                    "follow_up_questions": []
-                    }}"""
+                    correction_prompt = build_correction_prompt(llm_response)
                     llm_response = await llm_client.generate(correction_prompt)
 
         results.append(bullet_rewrite)

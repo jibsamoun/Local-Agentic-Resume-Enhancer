@@ -4,7 +4,7 @@ VariantType = Literal["impact_first", "scope_first", "tech_first"]
 
 class RewriteRequest(BaseModel):
     bullets: list[str]
-    job_description: Optional[str]
+    job_description: Optional[str] = None
 
 class RewriteVariant(BaseModel):
     variant_type: VariantType

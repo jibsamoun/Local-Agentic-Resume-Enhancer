@@ -23,4 +23,3 @@ class LLMClient:
             )
             result = response.json()
             return result["response"]
-        

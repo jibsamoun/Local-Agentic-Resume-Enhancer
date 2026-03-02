@@ -1,6 +1,6 @@
 # Local-Agentic-Resume-Enhancer
 
-A local-first agentic web app that rewrites resume bullet points into stronger, role-targeted versions using a locally running LLM. Built to demonstrate core agentic AI patterns including self-correction loops, critic-rewriter pipelines, and multi-stage LLM orchestration — all without a paid API.
+A local-first agentic web app that rewrites resume bullet points into stronger, role-targeted versions using a locally running LLM. Built to demonstrate core agentic AI patterns including self-correction loops, critic-rewriter pipelines, and multi-stage LLM orchestration.
 
 ## Agentic Architecture
 
@@ -46,6 +46,51 @@ RewriteResponse → frontend
 - Flags missing info and generates targeted follow-up questions
 - Hallucination prevention — rewriter and critic both enforce no invented metrics, tools, or scope
 
+## Getting Started
+
+**Prerequisites**
+- [Ollama](https://ollama.com) installed and running
+- Python 3.10+
+- Node.js 18+
+
+**1. Start Ollama**
+```bash
+ollama pull llama3.2:3b
+ollama serve
+```
+
+**2. Backend**
+```bash
+cd backend
+pip install -r requirements.txt
+python3 -m uvicorn app.main:app --reload
+```
+
+The backend runs on `http://localhost:8000`.
+
+**3. Frontend**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend runs on `http://localhost:5173`.
+
+**Environment variables**
+
+The backend reads from `backend/.env`:
+```
+LLM_BASE_URL=http://localhost:11434
+LLM_MODEL=llama3.2:3b
+```
+
+## Tech Stack
+
+- **Frontend:** React + TypeScript (Vite)
+- **Backend:** Python (FastAPI)
+- **Local LLM runtime:** Ollama — llama3.2:3b
+
 ## Next Steps
 
 **Follow-up question replies**
@@ -56,9 +101,3 @@ Instead of always running the same fixed prompt, an agent first analyzes the bul
 
 **Multi-Agent Orchestration**
 Split responsibilities across three specialized agents coordinated by an orchestrator: a Critic Agent that diagnoses weaknesses, a Rewriter Agent that generates variants based on that diagnosis, and an Evaluator Agent that scores and ranks the final outputs.
-
-## Tech Stack
-
-- **Frontend:** React + TypeScript (Vite)
-- **Backend:** Python (FastAPI)
-- **Local LLM runtime:** Ollama — llama3.2:3b

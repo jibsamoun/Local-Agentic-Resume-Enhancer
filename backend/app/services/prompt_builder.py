@@ -1,5 +1,6 @@
-# What to say to Ollama
-def build_rewrite_prompt(bullet: str, job_description: str = None) -> str:
+import json
+
+def build_rewrite_prompt(bullet: str, job_description: str = None, feedback: str = None) -> str:
     """
     Builds a prompt to rewrite a resume bullet point.
 
@@ -19,8 +20,12 @@ def build_rewrite_prompt(bullet: str, job_description: str = None) -> str:
 
     prompt = f"""You are a resume expert. Rewrite the following resume bullet point into three variants:
     - impact_first: Lead with the measurable result or outcome 
-    - scope_first: Lead with scale, team size, or project scope
-    - tech_first: Lead with the technologies, tools, or methodologies used
+    - scope_first: Lead with scale, team size, or project scope.
+    If no scope information exists in the original bullet, ask a follow-up
+    question instead of inventing one, and write the variant without scope.
+    - tech_first: Lead with technologies, tools, or methodologies used.
+    If the original bullet mentions NO specific technologies, do NOT name any tools.
+    Instead write a generic variant and add a follow-up question asking which tools were used.
 
     STRICT RULES:
 1. NEVER invent metrics, numbers, percentages, or statistics
@@ -39,6 +44,8 @@ def build_rewrite_prompt(bullet: str, job_description: str = None) -> str:
 
     Remember: NO INVENTED NUMBERS. If unsure, keep it qualitative.
     
+   {f"Feedback from previous attempt: {feedback}. Make sure your rewrite addresses this feedback." if feedback else ""}
+
     Original bullet point: {bullet}
     {job_context}
     Respond with valid JSON only, no other text:
@@ -77,3 +84,31 @@ def build_correction_prompt(invalid_response: str) -> str:
                     }}
     """
     return correction_prompt
+
+def build_critique_prompt(variants: list, original_bullet: str) -> str:
+  return f"""You are a strict resume critic. Evaluate each variant ONLY against its own specific rule.
+
+  Original bullet: "{original_bullet}"
+
+  Variants:
+  {json.dumps(variants, indent=2)}
+
+  Evaluate each variant independently:
+
+  - impact_first: Does it lead with an outcome or result? Reject if it leads with a task or action instead.
+  - scope_first: Does it lead with scale, team size, or project scope? Reject if it leads with anything else.
+  - tech_first: Does it lead with a specific technology, tool, or methodology? Reject if it leads with anything
+  else.
+
+  Global rules that apply to ALL variants:
+  - No variant may contain metrics or numbers not present in the original bullet
+  - If the original bullet contains no technology names or tool names, the tech_first variant must not name any specific tools, languages, or software. If it does, reject it.
+  - If the original bullet contains no scope details, the scope_first variant must not invent team sizes, platforms, or scale. If it does, reject it.
+
+  Respond with valid JSON only:
+  {{
+    "approved": true or false,
+    "feedback": "specific explanation referencing the variant_type and which rule it broke, or empty string if
+  approved"
+  }}
+  """

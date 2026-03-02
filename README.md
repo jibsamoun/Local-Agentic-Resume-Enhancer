@@ -51,10 +51,10 @@ RewriteResponse → frontend
 **Follow-up question replies**
 Add a text box per bullet that lets users answer the generated follow-up questions (ex. providing the actual team size, metrics, or technologies used). The LLM then regenerates all three variants using the new context, closing the human-in-the-loop feedback cycle.
 
-**Level 3 — Tool Use**
+**Tool Use**
 Instead of always running the same fixed prompt, an agent first analyzes the bullet and decides which tools to invoke — such as `classify_bullet_type` or `identify_missing_info` — before rewriting. The LLM determines its own execution path rather than following a hardcoded pipeline.
 
-**Level 4 — Multi-Agent Orchestration**
+**Multi-Agent Orchestration**
 Split responsibilities across three specialized agents coordinated by an orchestrator: a Critic Agent that diagnoses weaknesses, a Rewriter Agent that generates variants based on that diagnosis, and an Evaluator Agent that scores and ranks the final outputs.
 
 ## Tech Stack
